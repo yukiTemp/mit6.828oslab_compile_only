@@ -1,9 +1,3 @@
-#
-# Makefile fragment for the JOS kernel.
-# This is NOT a complete makefile;
-# you must run GNU make in the top-level directory
-# where the GNUmakefile is located.
-#
 
 OBJDIRS += boot
 
@@ -14,16 +8,30 @@ $(OBJDIR)/boot/%.o: boot/%.c
 	@echo + cc -Os $<
 	@mkdir -p $(@D)
 	$(V)$(CC) -nostdinc $(KERN_CFLAGS) -Os -c -o $@ $<
-#------------------------------------------
+#---------------------------------------
+#V=@ by default, and $(V)$(CC) ... below equals to:
+#@gcc -pipe -nostdinc    -O1 -fno-builtin -I. -MD -fno-omit-frame-pointer -std=gnu99
+# -static -Wall -Wno-format -Wno-unused -Werror -gstabs -m32 -fno-tree-ch -fno-stack-protector
+# -DJOS_KERNEL -gstabs -c -o obj/boot/boot.o boot/boot.S
+# @ Turn off command echo
 $(OBJDIR)/boot/%.o: boot/%.S
 	@echo + as $<
 	@mkdir -p $(@D)
 	$(V)$(CC) -nostdinc $(KERN_CFLAGS) -c -o $@ $<
+
 #-----------------------------------------
 $(OBJDIR)/boot/main.o: boot/main.c
 	@echo + cc -Os $<
 	$(V)$(CC) -nostdinc $(KERN_CFLAGS) -Os -c -o $(OBJDIR)/boot/main.o boot/main.c
 #---------------------------------------
+#the third line below the target equals to:
+#@ld -m elf_i386 -N -e start -Ttext 0x7C00 -o obj/boot/boot.out obj/boot/boot.o obj/boot/main.o
+#the fourth line below the target:
+#output boot.asm file, this file include assembly instructions with thier coresponding c code.
+#the fifth line below the target equals to:
+#@objcopy -S -O binary -j .text obj/boot/boot.out obj/boot/boot
+#it removes all redundant data, only preserves the .text segment data(380 bytes)
+#the final line call the file sign.pl, which checks the lenghth of boot, and print the result
 $(OBJDIR)/boot/boot: $(BOOT_OBJS)
 	@echo + ld boot/boot
 	$(V)$(LD) $(LDFLAGS) -N -e start -Ttext 0x7C00 -o $@.out $^

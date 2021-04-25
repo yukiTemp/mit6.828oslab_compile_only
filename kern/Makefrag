@@ -1,9 +1,3 @@
-#
-# Makefile fragment for JOS kernel.
-# This is NOT a complete makefile;
-# you must run GNU make in the top-level directory
-# where the GNUmakefile is located.
-#
 
 OBJDIRS += kern
 
@@ -41,11 +35,14 @@ KERN_BINFILES :=
 KERN_OBJFILES := $(patsubst %.c, $(OBJDIR)/%.o, $(KERN_SRCFILES))
 KERN_OBJFILES := $(patsubst %.S, $(OBJDIR)/%.o, $(KERN_OBJFILES))
 KERN_OBJFILES := $(patsubst $(OBJDIR)/lib/%, $(OBJDIR)/kern/%, $(KERN_OBJFILES))
+#sum up the three assignments above:
+#it turns all .c .S file in kern and lib into .o file in obj/kern/
 
 KERN_BINFILES := $(patsubst %, $(OBJDIR)/%, $(KERN_BINFILES))
-
+#KERN_BINFILES seems empty
 # How to build kernel object files
 # ------------------------------------
+#the purpose of adding .vars. file here is to rebuild the source if flags has changed
 $(OBJDIR)/kern/%.o: kern/%.c $(OBJDIR)/.vars.KERN_CFLAGS
 	@echo + cc $<
 	@mkdir -p $(@D)
@@ -68,6 +65,7 @@ $(OBJDIR)/kern/init.o: override KERN_CFLAGS+=$(INIT_CFLAGS)
 $(OBJDIR)/kern/init.o: $(OBJDIR)/.vars.INIT_CFLAGS
 # How to build the kernel itself
 # --------------------------------------
+#kernel.ld didn't exist
 $(OBJDIR)/kern/kernel: $(KERN_OBJFILES) $(KERN_BINFILES) kern/kernel.ld \
 	  $(OBJDIR)/.vars.KERN_LDFLAGS
 	@echo + ld $@
@@ -75,7 +73,6 @@ $(OBJDIR)/kern/kernel: $(KERN_OBJFILES) $(KERN_BINFILES) kern/kernel.ld \
 	$(V)$(OBJDUMP) -S $@ > $@.asm
 	$(V)$(NM) -n $@ > $@.sym
 # How to build the kernel disk image
-# kernel and boot is Intermediate file, and will be deleted by make automatically
 # -------------------------------------------------
 $(OBJDIR)/kern/kernel.img: $(OBJDIR)/kern/kernel $(OBJDIR)/boot/boot
 	@echo + mk $@
