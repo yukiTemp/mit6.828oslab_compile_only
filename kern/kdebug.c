@@ -5,7 +5,7 @@
 
 #include <kern/kdebug.h>
 
-extern const struct Stab __STAB_BEGIN__[];	// Beginning of stabs table
+extern const struct Stab __STAB_BEGIN__[];	// Beginning of stabs table, defined in kernel.ld
 extern const struct Stab __STAB_END__[];	// End of stabs table
 extern const char __STABSTR_BEGIN__[];		// Beginning of string table
 extern const char __STABSTR_END__[];		// End of string table
@@ -57,6 +57,7 @@ stab_binsearch(const struct Stab *stabs, int *region_left, int *region_right,
 		int true_m = (l + r) / 2, m = true_m;
 
 		// search for earliest stab with right type
+		// m point to the 'middle' of [l,r], and the type of this stab is equal to arg type
 		while (m >= l && stabs[m].n_type != type)
 			m--;
 		if (m < l) {	// no match in [l, m]

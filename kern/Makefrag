@@ -65,7 +65,10 @@ $(OBJDIR)/kern/init.o: override KERN_CFLAGS+=$(INIT_CFLAGS)
 $(OBJDIR)/kern/init.o: $(OBJDIR)/.vars.INIT_CFLAGS
 # How to build the kernel itself
 # --------------------------------------
-#kernel.ld didn't exist
+#fourth line below the target equals to:   @ld -o obj/kern/kernel -m elf_i386 -T kern/kernel.ld 
+#-nostdlib obj/kern/entry.o obj/kern/entrypgdir.o obj/kern/init.o obj/kern/console.o obj/kern/monitor.o
+# obj/kern/printf.o obj/kern/kdebug.o  obj/kern/printfmt.o  obj/kern/readline.o  obj/kern/string.o
+# /usr/lib/gcc/x86_64-linux-gnu/4.8/32/libgcc.a -b binary
 $(OBJDIR)/kern/kernel: $(KERN_OBJFILES) $(KERN_BINFILES) kern/kernel.ld \
 	  $(OBJDIR)/.vars.KERN_LDFLAGS
 	@echo + ld $@

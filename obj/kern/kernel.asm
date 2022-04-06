@@ -1277,6 +1277,7 @@ f0100a25:	f7 f9                	idiv   %ecx
 f0100a27:	89 c1                	mov    %eax,%ecx
 
 		// search for earliest stab with right type
+		// m point to the 'middle' of [l,r], and the type of this stab is equal to arg type
 		while (m >= l && stabs[m].n_type != type)
 f0100a29:	eb 01                	jmp    f0100a2c <stab_binsearch+0x36>
 			m--;
@@ -1437,7 +1438,7 @@ f0100b1f:	eb 1c                	jmp    f0100b3d <debuginfo_eip+0x6a>
   	        panic("User address");
 f0100b21:	c7 44 24 08 4e 1f 10 	movl   $0xf0101f4e,0x8(%esp)
 f0100b28:	f0 
-f0100b29:	c7 44 24 04 7f 00 00 	movl   $0x7f,0x4(%esp)
+f0100b29:	c7 44 24 04 80 00 00 	movl   $0x80,0x4(%esp)
 f0100b30:	00 
 f0100b31:	c7 04 24 5b 1f 10 f0 	movl   $0xf0101f5b,(%esp)
 f0100b38:	e8 bb f5 ff ff       	call   f01000f8 <_panic>

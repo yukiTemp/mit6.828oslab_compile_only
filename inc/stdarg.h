@@ -3,6 +3,7 @@
 #ifndef JOS_INC_STDARG_H
 #define	JOS_INC_STDARG_H
 
+//__buildin_va_list seems to be built in in gcc
 typedef __builtin_va_list va_list;
 
 #define va_start(ap, last) __builtin_va_start(ap, last)

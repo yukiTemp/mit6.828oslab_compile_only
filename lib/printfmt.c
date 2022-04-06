@@ -101,7 +101,7 @@ vprintfmt(void (*putch)(int, void*), void *putdat, const char *fmt, va_list ap)
 		precision = -1;
 		lflag = 0;
 		altflag = 0;
-	reswitch:
+	reswitch://not a key word, just a jump point
 		switch (ch = *(unsigned char *) fmt++) {
 
 		// flag to pad on the right
@@ -125,6 +125,7 @@ vprintfmt(void (*putch)(int, void*), void *putdat, const char *fmt, va_list ap)
 		case '8':
 		case '9':
 			for (precision = 0; ; ++fmt) {
+			//calculate the width(minimum number of characters to be printed) at once, such 23
 				precision = precision * 10 + ch - '0';
 				ch = *fmt;
 				if (ch < '0' || ch > '9')
